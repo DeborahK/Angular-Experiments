@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { NgIf, CurrencyPipe, AsyncPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { combineLatest, map, of } from 'rxjs';
+import { combineLatest, map, startWith, tap } from 'rxjs';
 
 import { ProductODetailService } from './product-o-detail.service';
 import { StarComponent } from '../../shared/star.component';
@@ -19,12 +19,15 @@ export class ProductODetailComponent implements OnInit {
 
   // Observables
   product$ = this.productDetailService.selectedProduct$;
+
   // If the user accessed the detail using a direct URL
   // the data will be loaded, so display loading indicator
   loading$ = this.productService.loadingData$;
 
+  // When first loading, the product$ stream has not yet emitted
+  // So use startWith to provide an initial emission
   pageTitle$ = combineLatest([
-    this.product$,
+    this.product$.pipe(startWith(undefined)),
     this.loading$
   ]).pipe(
     map(([product, isLoading]) => {

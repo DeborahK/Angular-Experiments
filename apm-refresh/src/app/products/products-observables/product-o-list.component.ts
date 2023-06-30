@@ -1,11 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgIf, NgFor, CurrencyPipe, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { ProductOService } from './product-o.service';
 import { Product } from '../product';
 import { StarComponent } from '../../shared/star.component';
-import { catchError, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, catchError, combineLatest, map, tap } from 'rxjs';
 
 @Component({
   templateUrl: './product-o-list.component.html',
@@ -15,30 +15,35 @@ import { catchError, tap } from 'rxjs';
 })
 export class ProductOListComponent {
   pageTitle = 'Product List';
-  imageWidth = 50;
-  imageMargin = 2;
   errorMessage = '';
+  showImage = false;
 
   private productService = inject(ProductOService);
 
-  filteredProducts: Product[] = [];
-  listFilter = signal('');
-  showImage = signal(false);
+  // Define an action for a change to the list filter
+  private listFilter = new BehaviorSubject('');
+  listFilter$ = this.listFilter.asObservable();
 
   // Reference the products and loading Observables from the service
   products$ = this.productService.products$.pipe(
-    tap(p => this.prepareDisplay(p)),
-    catchError(err => this.errorMessage = err)
+    catchError(err => {
+      this.errorMessage = err;
+      return EMPTY;
+    })
   );
   loading$ = this.productService.loadingData$;
 
-  onFilterChange(value: string) {
-    this.listFilter.set(value);
-  }
+  // Filter when the products are returned
+  // Or when the list filter changes
+  filteredProducts$ = combineLatest([
+    this.products$,
+    this.listFilter$
+  ]).pipe(
+    map(([products, filter]) => this.performFilter(products, filter))
+  );
 
-  prepareDisplay(products: Product[]): void {
-    // Filter when the products are returned
-    this.filteredProducts = this.performFilter(products, this.listFilter());
+  onFilterChange(value: string) {
+    this.listFilter.next(value);
   }
 
   performFilter(products: Product[], filterBy: string): Product[] {
@@ -56,7 +61,7 @@ export class ProductOListComponent {
 
   toggleImage(): void {
     // Use the "not" operator to toggle from true to false or false to true
-    this.showImage.update(flag => !flag);
+    this.showImage = !this.showImage;
   }
 
 }
