@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NgIf, NgFor, CurrencyPipe, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -27,14 +27,18 @@ export class ProductOListComponent {
 
   // Reference the products and loading Observables from the service
   products$ = this.productService.products$.pipe(
-    // Filter when the products are returned
-    tap(p => this.filteredProducts = this.performFilter(p, this.listFilter())),
+    tap(p => this.prepareDisplay(p)),
     catchError(err => this.errorMessage = err)
   );
   loading$ = this.productService.loadingData$;
 
   onFilterChange(value: string) {
     this.listFilter.set(value);
+  }
+
+  prepareDisplay(products: Product[]): void {
+    // Filter when the products are returned
+    this.filteredProducts = this.performFilter(products, this.listFilter());
   }
 
   performFilter(products: Product[], filterBy: string): Product[] {

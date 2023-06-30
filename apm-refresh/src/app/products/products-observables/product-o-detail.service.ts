@@ -1,15 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 
 import { ProductOService } from './product-o.service';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductODetailService {
   private productService = inject(ProductOService);
-
-  loadingData$ = this.productService.loadingData$;
 
   // Observable for the selected product Id
   private selectedProductId = new BehaviorSubject<number | undefined>(undefined);
@@ -23,6 +21,7 @@ export class ProductODetailService {
     map(([products, selectedProductId]) =>
       products.find(product => product.id === selectedProductId)
     ),
+    tap(product => console.log(JSON.stringify(product)))
   );
 
   setSelectedProduct(id: number | undefined): void {

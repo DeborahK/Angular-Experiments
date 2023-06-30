@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, switchMap, tap, } from 'rxjs/operators';
+import { catchError, delay, finalize, shareReplay, switchMap, tap, } from 'rxjs/operators';
 import { Product } from '../product';
 
 @Injectable({
@@ -23,13 +23,15 @@ export class ProductOService {
   // Get the list of products
   // Whenever the data is refreshed
   products$ = this.refresh$.pipe(
+    delay(0), // To prevent the Expression changed after checked error
     tap(() => this.loadingData.next(true)),
     switchMap(() => this.http.get<Product[]>(this.productsUrl)
       .pipe(
         tap(data => console.log(JSON.stringify(data))),
-        tap(() => this.loadingData.next(false)),
+        finalize(() => this.loadingData.next(false)),
         catchError(this.handleError)
-      ))
+      )),
+      shareReplay(1)
   )
 
   refreshProducts(): void {

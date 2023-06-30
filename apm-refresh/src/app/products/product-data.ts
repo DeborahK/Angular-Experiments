@@ -70,13 +70,19 @@ export class ProductData implements InMemoryDbService {
   responseInterceptor(resOptions: ResponseOptions, reqInfo: RequestInfo) {
     if (resOptions.body) {
       // Randomly return 3 of them so that refresh returns different products
-      const n = 3;
+      // const n = 3;
+      // resOptions.body = data
+      //   .map(x => ({ x, r: Math.random() }))
+      //   .sort((a, b) => a.r - b.r)
+      //   .map(a => a.x)
+      //   .slice(0, n);
+      
+      // Randomly add a letter to the end of each name
       const data = resOptions.body as Product[];
-      resOptions.body = data
-        .map(x => ({ x, r: Math.random() }))
-        .sort((a, b) => a.r - b.r)
-        .map(a => a.x)
-        .slice(0, n);
+      resOptions.body = data.map(x => ({
+        ...x,
+        productName: x.productName + String.fromCharCode(65 + Math.floor(Math.random() * 26))
+      }));
     }
     return resOptions;
   }

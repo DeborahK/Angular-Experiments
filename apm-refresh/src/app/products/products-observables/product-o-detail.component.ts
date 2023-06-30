@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { NgIf, CurrencyPipe, AsyncPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { combineLatest, map, of } from 'rxjs';
 
 import { ProductODetailService } from './product-o-detail.service';
 import { StarComponent } from '../../shared/star.component';
-import { combineLatest, map } from 'rxjs';
+import { ProductOService } from './product-o.service';
 
 @Component({
   templateUrl: './product-o-detail.component.html',
@@ -14,10 +15,13 @@ import { combineLatest, map } from 'rxjs';
 })
 export class ProductODetailComponent implements OnInit {
   productDetailService = inject(ProductODetailService);
+  productService = inject(ProductOService);
 
   // Observables
   product$ = this.productDetailService.selectedProduct$;
-  loading$ = this.productDetailService.loadingData$;
+  // If the user accessed the detail using a direct URL
+  // the data will be loaded, so display loading indicator
+  loading$ = this.productService.loadingData$;
 
   pageTitle$ = combineLatest([
     this.product$,
