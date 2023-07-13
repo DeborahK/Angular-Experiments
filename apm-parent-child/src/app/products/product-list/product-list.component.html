@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-header">
+    {{ pageTitle }}
+  </div>
+
+  <div class="card-body"
+       *ngIf="products().length">
+
+    <div *ngFor="let product of products(); let i = index">
+      <div class="row">
+        <div class='col-md-2'>
+          <button class="btn btn-secondary float-md-end mt-2"
+                  (click)="toggle(i)">
+            {{showDetail()[i] ? 'Hide ' :'Show ' }}Detail
+          </button>
+        </div>
+        <div class="col-md-10">
+          <pm-product-detail [product]="product"
+                             [displayDetail]="showDetail()[i]"
+                             includeImage
+                             imageWidth="100"
+                             [imageTitle]="product.productName"
+                             availability="2024-08-25" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
