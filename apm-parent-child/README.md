@@ -10,3 +10,5 @@ It demonstrates:
 - Transform option to change a value provided by the parent before it is assigned to the input property
 - The built-in booleanAttribute transform function to transform a string to a Boolean.
 - The built-in numberAttribute transform function to transform a string to a number.
+
+The [associated YouTube video is here](https://youtu.be/5_YZVF0OAu0).
