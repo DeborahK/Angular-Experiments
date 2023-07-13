@@ -1,27 +1,12 @@
-# Apm
+# apm-parent-child
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.1.
+This project includes a parent component with a child component.
 
-## Development server
+It demonstrates:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Using the `@Input()` decorator to create input properties.
+- Alias option to alias the input property name.
+- Require option to require the parent component provide the input property
+- Transform option to change a value provided by the parent before it is assigned to the input property
+- The built-in booleanAttribute transform function to transform a string to a Boolean.
+- The built-in numberAttribute transform function to transform a string to a number.
